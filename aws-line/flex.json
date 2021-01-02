@@ -1,0 +1,59 @@
+{
+	"type": "flex",
+	"altText": "#",
+	"contents": {
+		"type": "bubble",
+		"hero": {
+			"type": "image",
+			"url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_2_restaurant.png",
+			"size": "full",
+			"aspectRatio": "20:13",
+			"aspectMode": "cover",
+			"action": {
+				"type": "uri",
+				"label": "#",
+				"uri": "https://classmethod.jp/"
+			}
+		},
+		"body": {
+			"type": "box",
+			"layout": "vertical",
+			"spacing": "md",
+			"contents": [
+				{
+					"type": "text",
+					"text": "Hamburger",
+					"wrap": true,
+					"weight": "bold",
+					"gravity": "center",
+					"size": "xl"
+				},
+				{
+					"type": "box",
+					"layout": "vertical",
+					"margin": "xxl",
+					"contents": [
+						{
+							"type": "spacer",
+							"size": "lg"
+						},
+						{
+							"type": "image",
+							"url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/linecorp_code_withborder.png",
+							"aspectMode": "cover",
+							"size": "xl"
+						},
+						{
+							"type": "text",
+							"text": "You can pick up your order by using this code instead of a ticket.",
+							"color": "#aaaaaa",
+							"wrap": true,
+							"margin": "xxl",
+							"size": "xs"
+						}
+					]
+				}
+			]
+		}
+	}
+}
