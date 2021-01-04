@@ -4,7 +4,36 @@ const crypto = require('crypto')
 const client = new line.Client({ channelAccessToken: process.env.ACCESSTOKEN })
 
 const datafeed = require('./datafeed')
-const messenger = require('./template')
+const bot = require('./template')
+
+const pref = [
+	{
+		key: 'tokyo',
+		value: '東京都',
+	},
+	{
+		key: 'osaka',
+		value: '大阪府',
+	},
+	{
+		key: 'aichi',
+		value: '愛知県',
+	},
+]
+const city = [
+	{
+		key: 'shibuya-ku',
+		value: '渋谷区',
+	},
+	{
+		key: 'minato-ku',
+		value: '港区',
+	},
+	{
+		key: 'meguro-ku',
+		value: '目黒区',
+	},
+]
 
 exports.handler = function (event, context) {
 	console.log(event)
@@ -44,12 +73,9 @@ exports.handler = function (event, context) {
 	switch (body.events[0].type) {
 		case 'message':
 			let text = body.events[0].message.text
-			if (text === '物件') {
+			if (text === '検索') {
 				client
-					.replyMessage(
-						body.events[0].replyToken,
-						messenger(datafeed.preview)
-					)
+					.replyMessage(body.events[0].replyToken, bot.search(pref))
 					.then((response) => {
 						let lambdaResponse = {
 							statusCode: 200,
@@ -81,28 +107,8 @@ exports.handler = function (event, context) {
 			console.log(body.events[0].postback.data)
 			switch (body.events[0].postback.data) {
 				case 'confirm':
-					const confirm = {
-						'type': 'template',
-						'altText': 'this is a confirm template',
-						'template': {
-							'type': 'confirm',
-							'text': '内見を予約しますか？',
-							'actions': [
-								{
-									'type': 'message',
-									'label': 'ぜひ！',
-									'text': 'yes',
-								},
-								{
-									'type': 'message',
-									'label': 'やっぱやめた',
-									'text': 'no',
-								},
-							],
-						},
-					}
 					client
-						.replyMessage(body.events[0].replyToken, confirm)
+						.replyMessage(body.events[0].replyToken, bot.confirm)
 						.then((response) => {
 							let lambdaResponse = {
 								statusCode: 200,
@@ -112,13 +118,14 @@ exports.handler = function (event, context) {
 							context.succeed(lambdaResponse)
 						})
 						.catch((err) => console.log(err))
+					break
 				case 'shibuya-ku':
 				case 'minato-ku':
 				case 'meguro-ku':
 					client
 						.replyMessage(
 							body.events[0].replyToken,
-							messenger(datafeed[body.events[0].postback.data])
+							bot.overview(datafeed[body.events[0].postback.data])
 						)
 						.then((response) => {
 							let lambdaResponse = {
@@ -129,6 +136,24 @@ exports.handler = function (event, context) {
 							context.succeed(lambdaResponse)
 						})
 						.catch((err) => console.log(err))
+					break
+				case 'tokyo':
+					client
+						.replyMessage(
+							body.events[0].replyToken,
+							bot.search(city)
+						)
+						.then((response) => {
+							let lambdaResponse = {
+								statusCode: 200,
+								headers: { 'X-Line-Status': 'OK' },
+								body: '{"result":"completed"}',
+							}
+							context.succeed(lambdaResponse)
+						})
+						.catch((err) => console.log(err))
+				case 'osaka':
+				case 'aichi':
 					break
 			}
 			break
